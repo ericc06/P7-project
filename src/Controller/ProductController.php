@@ -6,7 +6,6 @@ use App\Entity\Product;
 use App\Exception\ResourceValidationException;
 use App\Representation\Products;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -24,7 +23,7 @@ class ProductController extends FOSRestController
      * @Rest\Get("/products", name="api_product_list")
      * @Rest\View
      */
-    public function list(ParamFetcherInterface $paramFetcher)
+    public function list()
     {
         $products = $this->getDoctrine()->getRepository(Product::class)->findAll();
         $data = $this->get('jms_serializer')->serialize($products, 'json');
