@@ -3,6 +3,8 @@
 fos_rest:
     body_converter:
         enabled: true
+        validate: true
+        validation_errors_argument: violations
     routing_loader:
         default_format: json
         include_format: false
@@ -18,7 +20,13 @@ fos_rest:
         formats: { json: true, xml: false, rss: false }
     serializer:
         serialize_null: true
-
+    exception:
+        enabled: true
+        codes:
+           { App\Exception\ResourceValidationException: 400, \Exception: 500 }
+        messages:
+           { App\Exception\ResourceValidationException: true }
+           
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true
 #    routing_loader: true
