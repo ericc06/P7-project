@@ -12,7 +12,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         // Creation of 10 products
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $product = new Product();
             $product->setReference(self::getRandomString());
             $product->setBrand('Brand'.mt_rand(1, 3));
