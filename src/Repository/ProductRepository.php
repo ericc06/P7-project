@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Product;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+
+//use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,11 +13,25 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Product[]    findAll()
  * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProductRepository extends ServiceEntityRepository
+class ProductRepository extends AbstractRepository
 {
-    public function __construct(RegistryInterface $registry)
+    //public function search($term, $order = 'asc', $limit = 20, $offset = 0)
+    public function search($term, $order = 'asc', $limit = 20, $page = 1)
     {
-        parent::__construct($registry, Product::class);
+        $qb = $this
+            ->createQueryBuilder('p')
+            ->select('p')
+            ->orderBy('p.brand', $order)
+        ;
+
+        if ($term) {
+            $qb
+                ->where('p.brand LIKE ?1')
+                ->setParameter(1, '%'.$term.'%')
+            ;
+        }
+
+        return $this->paginate($qb, $limit, $page);
     }
 
     // /**
