@@ -12,6 +12,7 @@ fos_rest:
     format_listener:
         rules:
             - { path: '^/', priorities: ['json'], fallback_format: 'json' }
+            #- { path: '^/', priorities: ['html'], fallback_format: 'json' }
     param_fetcher_listener: true
     access_denied_listener:
         json: true
@@ -26,7 +27,7 @@ fos_rest:
            { App\Exception\ResourceValidationException: 400, \Exception: 500 }
         messages:
            { App\Exception\ResourceValidationException: true }
-           
+
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true
 #    routing_loader: true

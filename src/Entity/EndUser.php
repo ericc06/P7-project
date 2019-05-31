@@ -4,9 +4,21 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EndUserRepository")
+ *
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="This email address already exists.",
+ *     groups={"creation"}
+ * )
+ * @UniqueEntity(
+ *     fields={"phoneNumber"},
+ *     message="This phone number already exists.",
+ *     groups={"creation"}
+ * )
  */
 class EndUser
 {
@@ -32,14 +44,14 @@ class EndUser
     private $lastName;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, unique=true)
      *
      * @Assert\NotBlank()
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
+     * @ORM\Column(type="string", length=20, nullable=true, unique=true)
      */
     private $phoneNumber;
 

@@ -13,15 +13,10 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Product[]    findAll()
  * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-//class ProductRepository extends ServiceEntityRepository
 class ProductRepository extends AbstractRepository
 {
-    /*public function __construct(RegistryInterface $registry)
-    {
-        parent::__construct($registry, Product::class);
-    }*/
-
-    public function search($term, $order = 'asc', $limit = 20, $offset = 0)
+    //public function search($term, $order = 'asc', $limit = 20, $offset = 0)
+    public function search($term, $order = 'asc', $limit = 20, $page = 1)
     {
         $qb = $this
             ->createQueryBuilder('p')
@@ -36,7 +31,7 @@ class ProductRepository extends AbstractRepository
             ;
         }
 
-        return $this->paginate($qb, $limit, $offset);
+        return $this->paginate($qb, $limit, $page);
     }
 
     // /**

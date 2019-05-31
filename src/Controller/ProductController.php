@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Psr\Log\LoggerInterface;
 
 //use Hateoas\Representation\PaginatedRepresentation;
 
@@ -38,35 +39,27 @@ class ProductController extends AbstractFOSRestController
      * @Rest\QueryParam(
      *     name="limit",
      *     requirements="\d+",
-     *     default="5",
+     *     default="10",
      *     description="Max number of products per page."
      * )
      * @Rest\QueryParam(
-     *     name="offset",
+     *     name="page",
      *     requirements="\d+",
-     *     default="0",
-     *     description="The pagination offset."
+     *     default="1",
+     *     description="The requested paginated page."
      * )
      * @Rest\View
      */
-    public function list(Request $request, ParamFetcherInterface $paramFetcher)
+    public function list(ParamFetcherInterface $paramFetcher)
     {
         $pager = $this->getDoctrine()->getRepository(Product::class)->search(
             $paramFetcher->get('brand'),
             $paramFetcher->get('order'),
             $paramFetcher->get('limit'),
-            $paramFetcher->get('offset')
+            $paramFetcher->get('page')
         );
 
         return new Products($pager);
-        
-        /*$products = $this->getDoctrine()->getRepository(Product::class)->findAll();
-        $data = $this->get('jms_serializer')->serialize($products, 'json');
-
-        $response = new Response($data);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;*/
     }
 
     /**

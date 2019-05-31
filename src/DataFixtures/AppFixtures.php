@@ -4,12 +4,21 @@
 namespace App\DataFixtures;
 
 use App\Entity\Product;
+use App\Entity\EndUser;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
+    {
+        self::createProducts();
+        self::createEndUsers();
+
+        $manager->flush();
+    }
+
+    public function createProducts()
     {
         // Creation of 10 products
         for ($i = 0; $i < 20; $i++) {
@@ -25,13 +34,60 @@ class AppFixtures extends Fixture
             $product->setCreationDate(new \DateTime());
             $manager->persist($product);
         }
+    }
 
-        $manager->flush();
+    public function createEndUsers()
+    {
+        // Creation of 100 end users
+        for ($i = 0; $i < 100; $i++) {
+            $endUser = new EndUser();
+            $endUser->setFirstName(self::getRandValFromArray([
+                'André',
+                'Alice',
+                'Bernard',
+                'Corinne',
+                'François',
+                'Henri',
+                'Martine',
+                'Rémi',
+                'Sophie',
+                'William',
+            ]));
+            $endUser->setLastName(self::getRandValFromArray([
+                'Anduis',
+                'Blain',
+                'Daoud',
+                'Filipini',
+                'Leleu',
+                'Martin',
+                'Stone',
+                'Truli',
+                'Uzul',
+                'Walter',
+            ]));
+            $email = $endUser->getFirstName().'.'.$endUser->getLastName()
+                .mt_rand(1, 999).'@'.self::getRandValFromArray(['gmail', 'test', 'yahoo']).'.loc';
+            $endUser->setEmail($email);
+            $endUser->setPhoneNumber(self::getRandomNumString(10));
+            $endUser->setCreationDate(new \DateTime());
+            $manager->persist($endUser);
+        }
     }
 
     public function getRandomString($len = 10)
     {
         $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charsLen = strlen($chars);
+        $randomString = '';
+        for ($i = 0; $i < $len; $i++) {
+            $randomString .= $chars[rand(0, $charsLen - 1)];
+        }
+        return $randomString;
+    }
+
+    public function getRandomNumString($len = 10)
+    {
+        $chars = '0123456789';
         $charsLen = strlen($chars);
         $randomString = '';
         for ($i = 0; $i < $len; $i++) {

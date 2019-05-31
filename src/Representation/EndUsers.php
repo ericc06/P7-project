@@ -5,10 +5,10 @@ namespace App\Representation;
 use Pagerfanta\Pagerfanta;
 use JMS\Serializer\Annotation\Type;
 
-class Products
+class EndUsers
 {
     /**
-     * @Type("array<App\Entity\Product>")
+     * @Type("array<App\Entity\EndUser>")
      */
     public $data;
 
