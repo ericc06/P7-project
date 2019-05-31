@@ -12,13 +12,13 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        self::createProducts();
-        self::createEndUsers();
+        self::createProducts($manager);
+        self::createEndUsers($manager);
 
         $manager->flush();
     }
 
-    public function createProducts()
+    public function createProducts(ObjectManager $manager)
     {
         // Creation of 10 products
         for ($i = 0; $i < 20; $i++) {
@@ -36,7 +36,7 @@ class AppFixtures extends Fixture
         }
     }
 
-    public function createEndUsers()
+    public function createEndUsers(ObjectManager $manager)
     {
         // Creation of 100 end users
         for ($i = 0; $i < 100; $i++) {

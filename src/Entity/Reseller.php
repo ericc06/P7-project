@@ -61,31 +61,16 @@ class Reseller extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="first_name", type="string", length=100, nullable=true)
+     * @ORM\Column(name="shop_name", type="string", length=50, nullable=true)
      *
      * @Assert\Length(
      *      min = 1,
-     *      max = 100,
+     *      max = 50,
      *      minMessage = "FIELD_LENGTH_TOO_SHORT",
      *      maxMessage = "FIELD_LENGTH_TOO_LONG"
      * )
      */
-    private $firstName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="last_name", type="string", length=100, nullable=true)
-     *
-     * @Assert\Length(
-     *      min = 1,
-     *      max = 100,
-     *      minMessage = "FIELD_LENGTH_TOO_SHORT",
-     *      maxMessage = "FIELD_LENGTH_TOO_LONG"
-     * )
-     */
-    private $lastName;
-
+    private $shopName;
 
     /**
      * @var boolean
@@ -119,51 +104,27 @@ class Reseller extends BaseUser
     }
 
     /**
-     * Set firstName
+     * Set shopName
      *
-     * @param string $firstName
+     * @param string $shopName
      *
      * @return Reseller
      */
-    public function setFirstName($firstName)
+    public function setShopName($shopName)
     {
-        $this->firstName = $firstName;
+        $this->shopName = $shopName;
 
         return $this;
     }
 
     /**
-     * Get firstName
+     * Get shopName
      *
      * @return string
      */
-    public function getFirstName()
+    public function getShopName()
     {
-        return $this->firstName;
-    }
-
-    /**
-     * Set lastName
-     *
-     * @param string $lastName
-     *
-     * @return Reseller
-     */
-    public function setLastName($lastName)
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    /**
-     * Get lastName
-     *
-     * @return string
-     */
-    public function getLastName()
-    {
-        return $this->lastName;
+        return $this->shopName;
     }
 
     /**
