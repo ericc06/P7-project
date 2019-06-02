@@ -65,6 +65,25 @@ class EndUser
      */
     private $lastUpdateDate;
 
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="App\Entity\Client",
+     *     inversedBy="endUsers"
+     * )
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $client;
+
+    /**
+     * Constructor
+     *
+     * @param Client $client
+     */
+    public function __construct(Client $client = null)
+    {
+        $this->client = $client;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +157,18 @@ class EndUser
     public function setLastUpdateDate(\DateTimeInterface $lastUpdateDate): self
     {
         $this->lastUpdateDate = $lastUpdateDate;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }

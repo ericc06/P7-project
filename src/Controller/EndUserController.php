@@ -20,6 +20,25 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class EndUserController extends FOSRestController
 {
+    private function getAuthClient()
+    {
+        $oauthToken = $this->get('security.token_storage')->getToken();
+        $apiAccessToken = $this->get('fos_oauth_server.access_token_manager.default')
+            ->findTokenBy(['token' => $oauthToken->getToken()]);
+        $apiClient = $apiAccessToken->getClient();
+        return $apiClient;
+        //return;
+
+        /*
+        $tokenManager = $this->container
+            ->get('fos_oauth_server.access_token_manager.default');
+        $accessToken = $tokenManager->findTokenByToken(
+            $this->container->get('security.context')->getToken()->getToken()
+        );
+        return $accessToken->getClient();
+        */
+    }
+
     /**
      * @Rest\Get("/end-users", name="api_end_user_list")
      * @Rest\QueryParam(
@@ -50,7 +69,9 @@ class EndUserController extends FOSRestController
      */
     public function list(ParamFetcherInterface $paramFetcher)
     {
+        self::getAuthClient();
         $pager = $this->getDoctrine()->getRepository(EndUser::class)->search(
+            //self::getAuthClient(),
             $paramFetcher->get('lastname'),
             $paramFetcher->get('order'),
             $paramFetcher->get('limit'),
@@ -103,6 +124,7 @@ class EndUserController extends FOSRestController
         }
 
         $endUser->setCreationDate(new \DateTime());
+        $endUser->setClient(self::getAuthClient());
 
         $em = $this->getDoctrine()->getManager();
 

@@ -14,17 +14,18 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class EndUserRepository extends AbstractRepository
 {
-    public function search($term, $order = 'asc', $limit = 20, $page = 1)
+    public function search(/*$client, */$term, $order = 'asc', $limit = 20, $page = 1)
     {
         $qb = $this
             ->createQueryBuilder('e')
             ->select('e')
+            //->where('e.clientId = '.$client->getId())
             ->orderBy('e.lastName', $order)
         ;
 
         if ($term) {
             $qb
-                ->where('e.lastName LIKE ?1')
+                ->andwhere('e.lastName LIKE ?1')
                 ->setParameter(1, '%'.$term.'%')
             ;
         }

@@ -29,3 +29,10 @@ services:
 
     #sensio_framework_extra.view.listener:
         #alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+
+    FOS\OAuthServerBundle\Model\AccessTokenManagerInterface:
+      alias: fos_oauth_server.access_token_manager.default
+
+    #fos_oauth_server.access_token_manager.default:
+        #class: FOS\OAuthServerBundle\Entity\AccessTokenManager
+        #public: true
