@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\EndUser;
 use App\Exception\ResourceValidationException;
+use App\Exception\ResourceNotFoundException;
 use App\Representation\EndUsers;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -13,6 +14,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * EndUser controller.
@@ -23,10 +25,11 @@ class EndUserController extends FOSRestController
     private function getAuthClient()
     {
         $oauthToken = $this->get('security.token_storage')->getToken();
-        $apiAccessToken = $this->get('fos_oauth_server.access_token_manager.default')
+        /*$apiAccessToken = $this->get('fos_oauth_server.access_token_manager.default')
             ->findTokenBy(['token' => $oauthToken->getToken()]);
         $apiClient = $apiAccessToken->getClient();
         return $apiClient;
+        */
         //return;
 
         /*
@@ -40,7 +43,7 @@ class EndUserController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/end-users", name="api_end_user_list")
+     * @Rest\Get("/end-users", name="end_user_list")
      * @Rest\QueryParam(
      *     name="lastname",
      *     requirements="[a-zA-Z]+",
@@ -81,27 +84,35 @@ class EndUserController extends FOSRestController
         return new EndUsers($pager);
     }
 
+    // We use a custom ParamConverter:
+    // App/ParamConverter/EndUserParamConverter.php
     /**
      * @Rest\Get(
      *     path = "/end-users/{id}",
-     *     name = "api_end_user_show",
+     *     name = "end_user_show",
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View
      */
     public function show(EndUser $endUser)
     {
+        /*if (null === $endUser) {
+            $message = 'User no found.';
+
+            throw new ResourceNotFoundException($message);
+        }*/
+        
         return $endUser;
     }
 
     /**
      * @Rest\Post("/end-users")
-     * @Rest\View(StatusCode = 201)
      * @ParamConverter(
      *     "endUser",
      *     converter="fos_rest.request_body",
      *     options={"validator"={"groups"={"creation", "EndUser"}}}
      * )
+     * @Rest\View(StatusCode = 201)
      */
     public function create(EndUser $endUser, ConstraintViolationList $violations)
     {
@@ -135,16 +146,16 @@ class EndUserController extends FOSRestController
     }
 
     /**
-     * @Rest\View(StatusCode = 200)
      * @Rest\Put(
      *     path = "/end-users/{id}",
-     *     name = "api_end_user_update",
+     *     name = "end_user_update",
      *     requirements = {"id"="\d+"}
      * )
      * @ParamConverter(
      *     "newEndUser",
      *     converter="fos_rest.request_body"
      * )
+     * @Rest\View(StatusCode = 200)
      */
     public function update(
         EndUser $endUser,
@@ -226,12 +237,12 @@ class EndUserController extends FOSRestController
     }
 
     /**
-     * @Rest\View(StatusCode = 204)
      * @Rest\Delete(
      *     path = "/end-users/{id}",
-     *     name = "api_end_user_delete",
+     *     name = "end_user_delete",
      *     requirements = {"id"="\d+"}
      * )
+     * @Rest\View(StatusCode = 204)
      */
     public function delete(EndUser $endUser)
     {

@@ -62,6 +62,8 @@ class ProductController extends AbstractFOSRestController
         return new Products($pager);
     }
 
+    // We use a custom ParamConverter:
+    // App/ParamConverter/ProductParamConverter.php
     /**
      * @Rest\Get(
      *     path = "/products/{id}",
