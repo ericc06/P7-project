@@ -35,26 +35,10 @@ class ClientData extends Fixture
             $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
             $metadata->setIdGenerator(new AssignedGenerator());
             
-            self::letAddReference($i, $oauth2Client);
+            $constantName = "CLIENT_" . $i;
+            $this->addReference(constant("self::{$constantName}"), $oauth2Client);
         }
 
         $manager->flush();
-    }
-
-    private function letAddReference($i, $oauth2Client)
-    {
-        switch ($i) {
-            case 1:
-                $this->addReference(self::CLIENT_1, $oauth2Client);
-                break;
-            case 2:
-                $this->addReference(self::CLIENT_2, $oauth2Client);
-                break;
-            case 3:
-                $this->addReference(self::CLIENT_3, $oauth2Client);
-                break;
-            default:
-                break;
-        }
     }
 }

@@ -15,6 +15,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use FOS\OAuthServerBundle\Model\AccessTokenManagerInterface as ATM;
 
 /**
  * EndUser controller.
@@ -22,24 +23,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class EndUserController extends FOSRestController
 {
+    // Access token manager
+    private $atm;
+
+    public function __construct(ATM $accessTokenManager)
+    {
+        $this->atm = $accessTokenManager;
+    }
+
     private function getAuthClient()
     {
         $oauthToken = $this->get('security.token_storage')->getToken();
-        /*$apiAccessToken = $this->get('fos_oauth_server.access_token_manager.default')
-            ->findTokenBy(['token' => $oauthToken->getToken()]);
+        $apiAccessToken = $this->atm->findTokenBy(['token' => $oauthToken->getToken()]);
         $apiClient = $apiAccessToken->getClient();
-        return $apiClient;
-        */
-        //return;
 
-        /*
-        $tokenManager = $this->container
-            ->get('fos_oauth_server.access_token_manager.default');
-        $accessToken = $tokenManager->findTokenByToken(
-            $this->container->get('security.context')->getToken()->getToken()
-        );
-        return $accessToken->getClient();
-        */
+        return $apiClient;
     }
 
     /**
@@ -74,7 +72,7 @@ class EndUserController extends FOSRestController
     {
         self::getAuthClient();
         $pager = $this->getDoctrine()->getRepository(EndUser::class)->search(
-            //self::getAuthClient(),
+            self::getAuthClient(),
             $paramFetcher->get('lastname'),
             $paramFetcher->get('order'),
             $paramFetcher->get('limit'),
@@ -101,7 +99,7 @@ class EndUserController extends FOSRestController
 
             throw new ResourceNotFoundException($message);
         }*/
-        
+
         return $endUser;
     }
 

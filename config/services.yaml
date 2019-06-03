@@ -34,5 +34,5 @@ services:
     #  alias: fos_oauth_server.access_token_manager.default
 
     #fos_oauth_server.access_token_manager.default:
-        #class: FOS\OAuthServerBundle\Entity\AccessTokenManager
-        #public: true
+    #    class: FOS\OAuthServerBundle\Entity\AccessTokenManager
+    #    public: true

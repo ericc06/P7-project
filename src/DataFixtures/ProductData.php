@@ -21,7 +21,7 @@ class ProductData extends Fixture
             $product->setMemCapacity(Tools::getRandValFromArray([16, 32, 64]));
             $product->setScreenSize(Tools::getRandValFromArray([5.4, 5.9, 6.4]));
             $product->setColor(Tools::getRandValFromArray(['Black', 'Silver', 'Blue']));
-            $product->setPrice(mt_rand(40, 120) * 10);
+            $product->setPrice(mt_rand(40, 120) * 1000);
             $product->setStock(mt_rand(5, 50));
             $product->setCreationDate(new \DateTime());
             $manager->persist($product);

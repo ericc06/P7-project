@@ -27,7 +27,6 @@ class Client extends BaseClient
      */
     protected $type;
 
-    
     /**
      * @ORM\OneToMany(
      *     targetEntity="App\Entity\EndUser",

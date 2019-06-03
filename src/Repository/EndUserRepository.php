@@ -14,12 +14,12 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class EndUserRepository extends AbstractRepository
 {
-    public function search(/*$client, */$term, $order = 'asc', $limit = 20, $page = 1)
+    public function search($client, $term, $order = 'asc', $limit = 20, $page = 1)
     {
         $qb = $this
             ->createQueryBuilder('e')
             ->select('e')
-            //->where('e.clientId = '.$client->getId())
+            ->where('e.clientId = '.$client->getId())
             ->orderBy('e.lastName', $order)
         ;
 
@@ -30,7 +30,6 @@ class EndUserRepository extends AbstractRepository
             ;
         }
 
-        //return $this->paginate($qb, $limit, $offset);
         return $this->paginate($qb, $limit, $page);
     }
 

@@ -23,7 +23,7 @@ use Psr\Log\LoggerInterface;
 class ProductController extends AbstractFOSRestController
 {
     /**
-     * @Rest\Get("/products", name="api_product_list")
+     * @Rest\Get("/products", name="product_list")
      * @Rest\QueryParam(
      *     name="brand",
      *     requirements="[a-zA-Z0-9]+",
@@ -67,7 +67,7 @@ class ProductController extends AbstractFOSRestController
     /**
      * @Rest\Get(
      *     path = "/products/{id}",
-     *     name = "api_product_show",
+     *     name = "product_show",
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View
