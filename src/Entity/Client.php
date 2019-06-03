@@ -67,7 +67,7 @@ class Client extends BaseClient
     {
         $this->type = $type;
     }
-    
+
     /**
      * Add endUser
      *

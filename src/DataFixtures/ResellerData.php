@@ -40,7 +40,7 @@ class ResellerData extends Fixture implements ContainerAwareInterface
         $reseller
             ->setShopName("my-shop")
             ->setEnabled(true)
-            ->setRoles(array(Reseller::ROLE_SUPER_ADMIN))
+            ->setRoles([Reseller::ROLE_SUPER_ADMIN])
             ->setUsername("myshop")
             ->setPlainPassword("myshop")
             ->setEmail("myshop@mail.tld")

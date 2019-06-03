@@ -32,11 +32,11 @@ class Reseller extends BaseUser
      *
      * @var array
      */
-    static public $ROLES_SUPPORTED = array(
+    static public $ROLES_SUPPORTED = [
         self::ROLE_SUPER_ADMIN => self::ROLE_SUPER_ADMIN,
         self::ROLE_ADMIN => self::ROLE_ADMIN,
         self::ROLE_USER => self::ROLE_USER,
-    );
+    ];
 
     /**
      * @var int

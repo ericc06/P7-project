@@ -11,6 +11,13 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class EndUserData extends Fixture implements DependentFixtureInterface
 {
+    private $tools;
+
+    public function __construct(Tools $tools)
+    {
+        $this->tools = $tools;
+    }
+
     public function load(ObjectManager $manager)
     {
         // Creation of 100 end users
@@ -19,9 +26,9 @@ class EndUserData extends Fixture implements DependentFixtureInterface
             $endUser->setFirstName(self::getAFirstName());
             $endUser->setLastName(self::getALastName());
             $email = $endUser->getFirstName().'.'.$endUser->getLastName()
-                .mt_rand(1, 99).'@mail'.Tools::getRandNumStr(3).'.loc';
+                .mt_rand(1, 99).'@mail'.$this->tools->getRandNumStr(3).'.loc';
             $endUser->setEmail($email);
-            $endUser->setPhoneNumber(Tools::getRandNumStr(10));
+            $endUser->setPhoneNumber($this->tools->getRandNumStr(10));
             $endUser->setCreationDate(new \DateTime());
             $endUser->setClient(self::getAClient());
             $manager->persist($endUser);
@@ -32,7 +39,7 @@ class EndUserData extends Fixture implements DependentFixtureInterface
 
     public function getAFirstName()
     {
-        return Tools::getRandValFromArray([
+        return $this->tools->getRandValFromArray([
             'André',
             'Alice',
             'Bernard',
@@ -48,7 +55,7 @@ class EndUserData extends Fixture implements DependentFixtureInterface
 
     public function getALastName()
     {
-        return Tools::getRandValFromArray([
+        return $this->tools->getRandValFromArray([
             'Anduis',
             'Blain',
             'Daoud',
@@ -64,7 +71,7 @@ class EndUserData extends Fixture implements DependentFixtureInterface
 
     public function getAClient()
     {
-        return Tools::getRandValFromArray(
+        return $this->tools->getRandValFromArray(
             [
                 $this->getReference(ClientData::CLIENT_1),
                 $this->getReference(ClientData::CLIENT_2),
@@ -76,8 +83,6 @@ class EndUserData extends Fixture implements DependentFixtureInterface
     // Making this file load after ClientData fixtures
     public function getDependencies()
     {
-        return array(
-            ClientData::class,
-        );
+        return [ClientData::class];
     }
 }

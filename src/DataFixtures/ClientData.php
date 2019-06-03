@@ -11,9 +11,16 @@ use App\Tools\Tools;
 
 class ClientData extends Fixture
 {
+    private $tools;
+
     public const CLIENT_1 = 'client-1';
     public const CLIENT_2 = 'client-2';
     public const CLIENT_3 = 'client-3';
+
+    public function __construct(Tools $tools)
+    {
+        $this->tools = $tools;
+    }
 
     public function load(ObjectManager $manager)
     {
@@ -22,10 +29,10 @@ class ClientData extends Fixture
             $oauth2Client = new Client();
 
             $oauth2Client->setId($i);
-            $oauth2Client->setRandomId(Tools::getRandAlphaNumStrLow(20));
-            $oauth2Client->setRedirectUris(array());
-            $oauth2Client->setSecret(Tools::getRandAlphaNumStrLow(40));
-            $oauth2Client->setAllowedGrantTypes(array('password', 'refresh_token'));
+            $oauth2Client->setRandomId($this->tools->getRandAlphaNumStrLow(20));
+            $oauth2Client->setRedirectUris([]);
+            $oauth2Client->setSecret($this->tools->getRandAlphaNumStrLow(40));
+            $oauth2Client->setAllowedGrantTypes(['password', 'refresh_token']);
 
             $manager->persist($oauth2Client);
 
@@ -34,7 +41,7 @@ class ClientData extends Fixture
 
             $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
             $metadata->setIdGenerator(new AssignedGenerator());
-            
+
             $constantName = "CLIENT_" . $i;
             $this->addReference(constant("self::{$constantName}"), $oauth2Client);
         }
