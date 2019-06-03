@@ -108,7 +108,7 @@ class Client extends BaseClient
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function setEndUser(?Collection $endUser): self
+    public function setEndUser(?Collection $endUsers): self
     {
         $this->endUsers = $endUsers;
 
