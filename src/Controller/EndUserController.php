@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\EndUser;
 use App\Exception\ResourceValidationException;
 use App\Exception\ResourceNotFoundException;
+use App\Exception\ResourceAccessNotAuthorized;
 use App\Representation\EndUsers;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
@@ -31,6 +32,7 @@ class EndUserController extends FOSRestController
         $this->atm = $accessTokenManager;
     }
 
+    // Returns the current authenticated client, if any.
     private function getAuthClient()
     {
         $oauthToken = $this->get('security.token_storage')->getToken();
@@ -38,6 +40,16 @@ class EndUserController extends FOSRestController
         $apiClient = $apiAccessToken->getClient();
 
         return $apiClient;
+    }
+
+    // Checks if an EndUser belongs to the current authenticated client.
+    private function checkEndUserOwner($endUser)
+    {
+        if ($endUser->getClient() !== self::getAuthClient()) {
+            $message = 'You are not authorized to access this resource.';
+
+            throw new ResourceAccessNotAuthorized($message);
+        }
     }
 
     /**
@@ -70,7 +82,6 @@ class EndUserController extends FOSRestController
      */
     public function list(ParamFetcherInterface $paramFetcher)
     {
-        self::getAuthClient();
         $pager = $this->getDoctrine()->getRepository(EndUser::class)->search(
             self::getAuthClient(),
             $paramFetcher->get('lastname'),
@@ -94,11 +105,7 @@ class EndUserController extends FOSRestController
      */
     public function show(EndUser $endUser)
     {
-        /*if (null === $endUser) {
-            $message = 'User no found.';
-
-            throw new ResourceNotFoundException($message);
-        }*/
+        self::checkEndUserOwner($endUser);
 
         return $endUser;
     }
@@ -160,6 +167,8 @@ class EndUserController extends FOSRestController
         EndUser $newEndUser,
         ValidatorInterface $validator
     ) {
+        self::checkEndUserOwner($endUser);
+
         // Because of the following issue, we can't use the validator
         // the same way we did in the create() method :
         // https://github.com/FriendsOfSymfony/FOSRestBundle/issues/1751
@@ -226,7 +235,7 @@ class EndUserController extends FOSRestController
         $repository = $this->getDoctrine()->getRepository(EndUser::class);
         $id = $endUser->getId();
 
-        if (! empty($repository->stringValueExistsForOtherId($fieldName, $value, $id))) {
+        if (! empty($repository->stringValExistsForOtherId($fieldName, $value, $id))) {
             $error = new ConstraintViolation($message, '', [], $endUser, 'email', '');
             return $error;
         }
@@ -244,6 +253,8 @@ class EndUserController extends FOSRestController
      */
     public function delete(EndUser $endUser)
     {
+        self::checkEndUserOwner($endUser);
+
         $this->getDoctrine()->getManager()->remove($endUser);
         $this->getDoctrine()->getManager()->flush();
 

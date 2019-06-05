@@ -19,7 +19,8 @@ class EndUserRepository extends AbstractRepository
         $qb = $this
             ->createQueryBuilder('e')
             ->select('e')
-            ->where('e.clientId = '.$client->getId())
+            ->where('e.client = :id')
+            ->setParameter('id', $client->getId())
             ->orderBy('e.lastName', $order)
         ;
 
@@ -33,7 +34,7 @@ class EndUserRepository extends AbstractRepository
         return $this->paginate($qb, $limit, $page);
     }
 
-    public function stringValueExistsForOtherId($fieldName, $email, $id)
+    public function stringValExistsForOtherId($fieldName, $email, $id)
     {
         $result = $this->createQueryBuilder('e')
             ->select('e')
