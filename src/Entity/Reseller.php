@@ -83,7 +83,7 @@ class Reseller extends BaseUser
      * )
      */
     private $deleted;
-    
+
     /**
      * @ORM\OneToOne(
      *     targetEntity="App\Entity\Client",

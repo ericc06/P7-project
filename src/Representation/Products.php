@@ -12,6 +12,9 @@ class Products
      */
     public $data;
 
+    /**
+     * @Type("array")
+     */
     public $meta;
 
     public function __construct(Pagerfanta $data)
