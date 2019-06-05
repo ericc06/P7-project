@@ -7,6 +7,7 @@ use App\Exception\ResourceValidationException;
 use App\Exception\ResourceNotFoundException;
 use App\Exception\ResourceAccessNotAuthorized;
 use App\Representation\EndUsers;
+use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -90,7 +91,18 @@ class EndUserController extends FOSRestController
             $paramFetcher->get('page')
         );
 
-        return new EndUsers($pager);
+        $response = new Response();
+
+        // Cache for 600 seconds
+        $response->setSharedMaxAge(600);
+
+        // (optional) set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        $view = $this->view(new EndUsers($pager));
+        $view->setResponse($response);
+    
+        return $this->handleView($view);
     }
 
     // We use a custom ParamConverter:
