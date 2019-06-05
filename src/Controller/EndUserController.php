@@ -7,23 +7,22 @@ use App\Exception\ResourceValidationException;
 use App\Exception\ResourceNotFoundException;
 use App\Exception\ResourceAccessNotAuthorized;
 use App\Representation\EndUsers;
-use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\OAuthServerBundle\Model\AccessTokenManagerInterface as ATM;
+use App\Tools\Tools;
 
 /**
  * EndUser controller.
  * @Route("/api", name="api_")
  */
-class EndUserController extends FOSRestController
+class EndUserController extends AbstractFOSRestController
 {
     // Access token manager
     private $atm;
@@ -91,18 +90,7 @@ class EndUserController extends FOSRestController
             $paramFetcher->get('page')
         );
 
-        $response = new Response();
-
-        // Cache for 600 seconds
-        $response->setSharedMaxAge(600);
-
-        // (optional) set a custom Cache-Control directive
-        $response->headers->addCacheControlDirective('must-revalidate', true);
-
-        $view = $this->view(new EndUsers($pager));
-        $view->setResponse($response);
-    
-        return $this->handleView($view);
+        return Tools::setCache($this, 300, new EndUsers($pager));
     }
 
     // We use a custom ParamConverter:
@@ -119,7 +107,7 @@ class EndUserController extends FOSRestController
     {
         self::checkEndUserOwner($endUser);
 
-        return $endUser;
+        return Tools::setCache($this, 600, $endUser);
     }
 
     /**
