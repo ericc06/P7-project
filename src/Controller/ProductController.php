@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Tools\Tools;
 use Psr\Log\LoggerInterface;
 
 //use Hateoas\Representation\PaginatedRepresentation;
@@ -59,7 +60,7 @@ class ProductController extends AbstractFOSRestController
             $paramFetcher->get('page')
         );
 
-        return new Products($pager);
+        return Tools::setCache($this, 3600, new Products($pager));
     }
 
     // We use a custom ParamConverter:
@@ -74,6 +75,6 @@ class ProductController extends AbstractFOSRestController
      */
     public function show(Product $product)
     {
-        return $product;
+        return Tools::setCache($this, 3600, $product);
     }
 }

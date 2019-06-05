@@ -3,8 +3,29 @@
 
 namespace App\Tools;
 
-class Tools
+use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+
+// Extending AbstractFOSRestController to be able to use
+// AbstractFOSRestController::view() protected method.
+class Tools extends AbstractFOSRestController
 {
+    public function setCache($fosRestObject, $maxAge, $objForView)
+    {
+        $response = new Response();
+
+        // Cache for 3600 seconds
+        $response->setSharedMaxAge($maxAge);
+
+        // Set a custom Cache-Control directive
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+
+        $view = $fosRestObject->view($objForView);
+        $view->setResponse($response);
+    
+        return $fosRestObject->handleView($view);
+    }
+
     public function getRandAlphaNumStr($len = 10)
     {
         $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
