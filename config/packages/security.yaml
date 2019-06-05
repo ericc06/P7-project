@@ -11,6 +11,9 @@ security:
             id: fos_user.user_provider.username
 
     firewalls:
+        api_doc:
+            pattern: ^/api/doc
+            security: false
         oauth_token:
             pattern:    ^/oauth/v2/token
             security:   false
