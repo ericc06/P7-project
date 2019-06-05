@@ -24,9 +24,9 @@ fos_rest:
     exception:
         enabled: true
         codes:
-           { App\Exception\ResourceValidationException: 400, \Exception: 500 }
+            { App\Exception\ResourceValidationException: 400, App\Exception\ResourceNotFoundException: 404, App\Exception\ResourceAccessNotAuthorized: 403 }
         messages:
-           { App\Exception\ResourceValidationException: true }
+            { App\Exception\ResourceValidationException: true }
 
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true

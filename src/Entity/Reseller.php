@@ -32,11 +32,11 @@ class Reseller extends BaseUser
      *
      * @var array
      */
-    static public $ROLES_SUPPORTED = array(
+    static public $ROLES_SUPPORTED = [
         self::ROLE_SUPER_ADMIN => self::ROLE_SUPER_ADMIN,
         self::ROLE_ADMIN => self::ROLE_ADMIN,
         self::ROLE_USER => self::ROLE_USER,
-    );
+    ];
 
     /**
      * @var int
@@ -83,6 +83,16 @@ class Reseller extends BaseUser
      * )
      */
     private $deleted;
+    
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="App\Entity\Client",
+     *     inversedBy="reseller",
+     *     cascade={"persist", "remove"}
+     * )
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="id", nullable=false)
+     */
+    protected $client;
 
     /**
      * User constructor.
@@ -149,5 +159,29 @@ class Reseller extends BaseUser
     public function getDeleted()
     {
         return $this->deleted;
+    }
+
+    /**
+     * Set client
+     *
+     * @param Client $client
+     *
+     * @return Reseller
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * Get client
+     *
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 }

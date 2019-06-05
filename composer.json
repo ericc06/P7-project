@@ -21,7 +21,8 @@
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/validator": "4.2.*",
         "symfony/yaml": "4.2.*",
-        "white-october/pagerfanta-bundle": "^1.2"
+        "white-october/pagerfanta-bundle": "^1.2",
+        "willdurand/hateoas-bundle": "^2.0"
     },
     "config": {
         "preferred-install": {
