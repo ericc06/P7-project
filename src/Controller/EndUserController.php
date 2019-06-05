@@ -29,10 +29,12 @@ class EndUserController extends AbstractFOSRestController
 {
     // Access token manager
     private $atm;
+    private $tools;
 
-    public function __construct(ATM $accessTokenManager)
+    public function __construct(ATM $accessTokenManager, Tools $tools)
     {
         $this->atm = $accessTokenManager;
+        $this->tools = $tools;
     }
 
     // Returns the current authenticated client, if any.
@@ -61,27 +63,56 @@ class EndUserController extends AbstractFOSRestController
      *     name="lastname",
      *     requirements="[a-zA-Z]+",
      *     nullable=true,
-     *     description="The end user lastname to search for."
+     *     description="(optional) The end user's lastname to search for."
      * )
      * @Rest\QueryParam(
      *     name="order",
      *     requirements="asc|desc",
      *     default="asc",
-     *     description="Sort order (asc or desc)."
+     *     description="(optional) Sort order (asc or desc)."
      * )
      * @Rest\QueryParam(
      *     name="limit",
      *     requirements="\d+",
      *     default="10",
-     *     description="Max number of products per page."
+     *     description="(optional) Max number of products per page."
      * )
      * @Rest\QueryParam(
      *     name="page",
      *     requirements="\d+",
      *     default="1",
-     *     description="The requested paginated page."
+     *     description="(optional) The requested paginated page."
      * )
      * @Rest\View
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns a paginated list of end users.",
+     *     @Model(type=EndUsers::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="OAuth2 authentication required."
+     * )
+     * @SWG\Parameter(
+     *     name="lastname",
+     *     in="query",
+     *     type="string",
+     *     description="(optional) The end user's lastname to search for."
+     * )
+     * @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     type="integer",
+     *     description="(optional) The maximum number of products per page."
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     type="integer",
+     *     description="(optional) The requested paginated page."
+     * )
+     * @SWG\Tag(name="End users")
+     * @Security(name="Bearer")
      */
     public function list(ParamFetcherInterface $paramFetcher)
     {
@@ -93,7 +124,7 @@ class EndUserController extends AbstractFOSRestController
             $paramFetcher->get('page')
         );
 
-        return Tools::setCache($this, 300, new EndUsers($pager));
+        return $this->tools->setCache($this, 300, new EndUsers($pager));
     }
 
     // We use a custom ParamConverter:
@@ -105,12 +136,33 @@ class EndUserController extends AbstractFOSRestController
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns an end user's details.",
+     *     @Model(type=EndUser::class)
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="OAuth2 authentication required."
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="User not found."
+     * )
+     * @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     type="integer",
+     *     description="The id of the end user to be read."
+     * )
+     * @SWG\Tag(name="End users")
+     * @Security(name="Bearer")
      */
     public function show(EndUser $endUser)
     {
         self::checkEndUserOwner($endUser);
 
-        return Tools::setCache($this, 600, $endUser);
+        return $this->tools->setCache($this, 600, $endUser);
     }
 
     /**
@@ -121,6 +173,31 @@ class EndUserController extends AbstractFOSRestController
      *     options={"validator"={"groups"={"creation", "EndUser"}}}
      * )
      * @Rest\View(StatusCode = 201)
+     * @SWG\Response(
+     *     response=201,
+     *     description="End user created.",
+     *     @Model(type=EndUser::class)
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="The JSON sent contains invalid data."
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="OAuth2 authentication required."
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="User not found."
+     * )
+     * @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     type="integer",
+     *     description="The id of the end user to be read."
+     * )
+     * @SWG\Tag(name="End users")
+     * @Security(name="Bearer")
      */
     public function create(EndUser $endUser, ConstraintViolationList $violations)
     {
@@ -164,6 +241,31 @@ class EndUserController extends AbstractFOSRestController
      *     converter="fos_rest.request_body"
      * )
      * @Rest\View(StatusCode = 200)
+     * @SWG\Response(
+     *     response=200,
+     *     description="End user modified.",
+     *     @Model(type=EndUser::class)
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="The JSON sent contains invalid data."
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="OAuth2 authentication required."
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="User not found."
+     * )
+     * @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     type="integer",
+     *     description="The id of the end user to be modified."
+     * )
+     * @SWG\Tag(name="End users")
+     * @Security(name="Bearer")
      */
     public function update(
         EndUser $endUser,
@@ -253,6 +355,26 @@ class EndUserController extends AbstractFOSRestController
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View(StatusCode = 204)
+     * @SWG\Response(
+     *     response=204,
+     *     description="End user deleted."
+     * )
+     * @SWG\Response(
+     *     response=403,
+     *     description="OAuth2 authentication required."
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="User not found."
+     * )
+     * @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     type="integer",
+     *     description="The id of the end user to be deleted."
+     * )
+     * @SWG\Tag(name="End users")
+     * @Security(name="Bearer")
      */
     public function delete(EndUser $endUser)
     {

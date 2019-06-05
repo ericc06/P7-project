@@ -22,7 +22,7 @@ class Tools extends AbstractFOSRestController
 
         $view = $fosRestObject->view($objForView);
         $view->setResponse($response);
-    
+
         return $fosRestObject->handleView($view);
     }
 
