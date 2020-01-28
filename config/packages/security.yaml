@@ -40,7 +40,5 @@ security:
             anonymous: true
 
     access_control:
-        - { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }
-        - { path: ^/createClient, roles: [ IS_AUTHENTICATED_ANONYMOUSLY ] }
-        #- { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ], requires_channel: https }
-        #- { path: ^/createClient, roles: [ IS_AUTHENTICATED_ANONYMOUSLY ], requires_channel: https }
+        #- { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }
+        - { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ], requires_channel: https }
