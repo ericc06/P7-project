@@ -16,12 +16,13 @@ use Hateoas\Configuration\Annotation as Hateoas;
  * @UniqueEntity(
  *     fields={"email"},
  *     message="This email address already exists.",
- *     groups={"creation"}
+ *     groups={"creation","update"}
  * )
  * @UniqueEntity(
  *     fields={"phoneNumber"},
  *     message="This phone number already exists.",
- *     groups={"creation"}
+ *     ignoreNull=true,
+ *     groups={"creation","update"}
  * )
  *
  * @Hateoas\Relation(
@@ -63,6 +64,7 @@ class EndUser
      * @ORM\Column(type="string", length=50)
      * @Serializer\Expose
      * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $firstName;
 
@@ -70,6 +72,7 @@ class EndUser
      * @ORM\Column(type="string", length=50)
      * @Serializer\Expose
      * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $lastName;
 
@@ -77,6 +80,8 @@ class EndUser
      * @ORM\Column(type="string", length=50, unique=true)
      * @Serializer\Expose
      * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @Assert\Email(message = "'{{ value }}' is not a valid email address.")
      */
     private $email;
 

@@ -6,14 +6,32 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use App\Exception\LimitOrPageLogicException;
+use App\Exception\PageOutOfRangeException;
 
 abstract class AbstractRepository extends EntityRepository
 {
-    //protected function paginate(QueryBuilder $qb, $limit = 20, $offset = 0)
-    protected function paginate(QueryBuilder $qb, $limit = 20, $page = 1)
+    protected function paginate(QueryBuilder $qb, $limit, $page)
     {
-        if (!(0 < $limit && 0 < $page)) {
-            throw new \LogicException('$limit and $page must be greater than 0.');
+
+        if (!(filter_var($limit, FILTER_VALIDATE_INT) && 0 < $limit) &&
+            !(filter_var($page, FILTER_VALIDATE_INT) && 0 < $page)
+            ) {
+            $message = '$limit and $page must be integers greater than 0.';
+
+            throw new LimitOrPageLogicException($message);
+        }
+
+        if (!(filter_var($limit, FILTER_VALIDATE_INT) && 0 < $limit)) {
+            $message = '$limit must be an integer greater than 0.';
+
+            throw new LimitOrPageLogicException($message);
+        }
+
+        if (!(filter_var($page, FILTER_VALIDATE_INT) && 0 < $page)) {
+            $message = '$page must be an integer greater than 0.';
+
+            throw new LimitOrPageLogicException($message);
         }
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
@@ -21,7 +39,9 @@ abstract class AbstractRepository extends EntityRepository
         $pager->setMaxPerPage((int) $limit);
 
         if ($page > $pager->getNbPages()) {
-            throw new \OutOfRangeException('The requested page number is out of range.');
+            $message = 'The requested page number is out of range. '.$limit;
+
+            throw new PageOutOfRangeException($message);
         }
 
         try {
