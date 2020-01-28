@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\EndUser;
 use App\Exception\ResourceValidationException;
-use App\Exception\ResourceNotFoundException;
 use App\Exception\ResourceAccessNotAuthorized;
 use App\Representation\EndUsers;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -16,7 +15,6 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use FOS\OAuthServerBundle\Model\AccessTokenManagerInterface as ATM;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use App\Tools\Tools;
@@ -48,6 +46,7 @@ class EndUserController extends AbstractFOSRestController
     }
 
     // Checks if an EndUser belongs to the current authenticated client.
+    // If not, throws an appropriate custom exception.
     private function checkEndUserOwner($endUser)
     {
         if ($endUser->getClient() !== self::getAuthClient()) {
@@ -61,55 +60,76 @@ class EndUserController extends AbstractFOSRestController
      * @Rest\Get("/end-users", name="end_user_list")
      * @Rest\QueryParam(
      *     name="lastname",
-     *     requirements="[a-zA-Z]+",
+     *     requirements={
+     *         "rule" = "[a-zA-Z]+",
+     *         "error_message" = "'lastname' must contain only letters."
+     *     },
+     *     strict=true,
      *     nullable=true,
      *     description="(optional) The end user's lastname to search for."
      * )
      * @Rest\QueryParam(
      *     name="order",
-     *     requirements="asc|desc",
-     *     default="asc",
+     *     requirements={
+     *         "rule" = "asc|desc",
+     *         "error_message" = "'order' must be 'asc' or 'desc'"
+     *     },
+     *     strict=true,
+     *     nullable=true,
      *     description="(optional) Sort order (asc or desc)."
      * )
      * @Rest\QueryParam(
      *     name="limit",
-     *     requirements="\d+",
-     *     default="10",
+     *     requirements={
+     *         "rule" = "\d+",
+     *         "error_message" = "'limit' must be an integer greater than 0"
+     *     },
+     *     strict=true,
+     *     nullable=true,
      *     description="(optional) Max number of products per page."
      * )
      * @Rest\QueryParam(
      *     name="page",
-     *     requirements="\d+",
-     *     default="1",
+     *     requirements={
+     *         "rule" = "\d+",
+     *         "error_message" = "'page' must be an integer greater than 0"
+     *     },
+     *     strict=true,
+     *     nullable=true,
      *     description="(optional) The requested paginated page."
      * )
      * @Rest\View
-     * @SWG\Response(
-     *     response=200,
-     *     description="Returns a paginated list of end users.",
-     *     @Model(type=EndUsers::class)
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="OAuth2 authentication required."
-     * )
-     * @SWG\Parameter(
-     *     name="lastname",
-     *     in="query",
-     *     type="string",
-     *     description="(optional) The end user's lastname to search for."
-     * )
-     * @SWG\Parameter(
-     *     name="limit",
-     *     in="query",
-     *     type="integer",
-     *     description="(optional) The maximum number of products per page."
-     * )
-     * @SWG\Parameter(
-     *     name="page",
-     *     in="query",
-     *     type="integer",
-     *     description="(optional) The requested paginated page."
+     * @SWG\Get(
+     *     summary="Get a list of end users",
+     *     description="Retrieve a list of end users.",
+     *     operationId="list",
+     *     produces={"application/json"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns a paginated list of end users."
+     *     ),
+     *     @SWG\Response(
+     *         response=403,
+     *         description="OAuth2 authentication required."
+     *     ),
+     *     @SWG\Parameter(
+     *         name="lastname",
+     *         in="query",
+     *         type="string",
+     *         description="(optional) The end user's lastname to search for."
+     *     ),
+     *     @SWG\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         type="integer",
+     *         description="(optional) The maximum number of products per page."
+     *     ),
+     *     @SWG\Parameter(
+     *         name="page",
+     *         in="query",
+     *         type="integer",
+     *         description="(optional) The requested paginated page."
+     *     )
      * )
      * @SWG\Tag(name="End users")
      * @Security(name="Bearer")
@@ -127,7 +147,7 @@ class EndUserController extends AbstractFOSRestController
         return $this->tools->setCache($this, 300, new EndUsers($pager));
     }
 
-    // We use a custom ParamConverter:
+    // We use a custom ParamConverter to display a custom "not found" message:
     // App/ParamConverter/EndUserParamConverter.php
     /**
      * @Rest\Get(
@@ -136,24 +156,29 @@ class EndUserController extends AbstractFOSRestController
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View
-     * @SWG\Response(
-     *     response=200,
-     *     description="Returns an end user's details.",
-     *     @Model(type=EndUser::class)
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="OAuth2 authentication required."
-     * )
-     * @SWG\Response(
-     *     response=404,
-     *     description="User not found."
-     * )
-     * @SWG\Parameter(
-     *     name="id",
-     *     in="path",
-     *     type="integer",
-     *     description="The id of the end user to be read."
+     * @SWG\Get(
+     *     summary="Get a single end user",
+     *     description="Retrieve a single end user.",
+     *     operationId="show",
+     *     produces={"application/json"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Returns an end user's details."
+     *     ),
+     *     @SWG\Response(
+     *         response=403,
+     *         description="OAuth2 authentication required."
+     *     ),
+     *     @SWG\Response(
+     *         response=404,
+     *         description="End user not found."
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="path",
+     *         type="integer",
+     *         description="The id of the end user to be read."
+     *     )
      * )
      * @SWG\Tag(name="End users")
      * @Security(name="Bearer")
@@ -173,28 +198,23 @@ class EndUserController extends AbstractFOSRestController
      *     options={"validator"={"groups"={"creation", "EndUser"}}}
      * )
      * @Rest\View(StatusCode = 201)
-     * @SWG\Response(
-     *     response=201,
-     *     description="End user created.",
-     *     @Model(type=EndUser::class)
-     * )
-     * @SWG\Response(
-     *     response=400,
-     *     description="The JSON sent contains invalid data."
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="OAuth2 authentication required."
-     * )
-     * @SWG\Response(
-     *     response=404,
-     *     description="User not found."
-     * )
-     * @SWG\Parameter(
-     *     name="id",
-     *     in="path",
-     *     type="integer",
-     *     description="The id of the end user to be read."
+     * @SWG\Post(
+     *     summary="Create an end user",
+     *     description="Create a new end user.",
+     *     operationId="create",
+     *     produces={"application/json"},
+     *     @SWG\Response(
+     *         response=201,
+     *         description="End user created."
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="The JSON sent contains invalid data."
+     *     ),
+     *     @SWG\Response(
+     *         response=403,
+     *         description="OAuth2 authentication required."
+     *     )
      * )
      * @SWG\Tag(name="End users")
      * @Security(name="Bearer")
@@ -238,31 +258,37 @@ class EndUserController extends AbstractFOSRestController
      * )
      * @ParamConverter(
      *     "newEndUser",
-     *     converter="fos_rest.request_body"
+     *     converter="fos_rest.request_body",
+     *     options={"validator"={"groups"={"update", "EndUser"}}}
      * )
      * @Rest\View(StatusCode = 200)
-     * @SWG\Response(
-     *     response=200,
-     *     description="End user modified.",
-     *     @Model(type=EndUser::class)
-     * )
-     * @SWG\Response(
-     *     response=400,
-     *     description="The JSON sent contains invalid data."
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="OAuth2 authentication required."
-     * )
-     * @SWG\Response(
-     *     response=404,
-     *     description="User not found."
-     * )
-     * @SWG\Parameter(
-     *     name="id",
-     *     in="path",
-     *     type="integer",
-     *     description="The id of the end user to be modified."
+     * @SWG\Put(
+     *     summary="Update an end user",
+     *     description="Update a existing end user.",
+     *     operationId="update",
+     *     produces={"application/json"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="End user updated."
+     *     ),
+     *     @SWG\Response(
+     *         response=400,
+     *         description="The JSON sent contains invalid data."
+     *     ),
+     *     @SWG\Response(
+     *         response=403,
+     *         description="OAuth2 authentication required."
+     *     ),
+     *     @SWG\Response(
+     *         response=404,
+     *         description="End user not found."
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="path",
+     *         type="integer",
+     *         description="The id of the end user to be updated."
+     *     )
      * )
      * @SWG\Tag(name="End users")
      * @Security(name="Bearer")
@@ -355,23 +381,29 @@ class EndUserController extends AbstractFOSRestController
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View(StatusCode = 204)
-     * @SWG\Response(
-     *     response=204,
-     *     description="End user deleted."
-     * )
-     * @SWG\Response(
-     *     response=403,
-     *     description="OAuth2 authentication required."
-     * )
-     * @SWG\Response(
-     *     response=404,
-     *     description="User not found."
-     * )
-     * @SWG\Parameter(
-     *     name="id",
-     *     in="path",
-     *     type="integer",
-     *     description="The id of the end user to be deleted."
+     * @SWG\Delete(
+     *     summary="Delete an end user",
+     *     description="Delete an end user.",
+     *     operationId="delete",
+     *     produces={"application/json"},
+     *     @SWG\Response(
+     *         response=204,
+     *         description="End user deleted."
+     *     ),
+     *     @SWG\Response(
+     *         response=403,
+     *         description="OAuth2 authentication required."
+     *     ),
+     *     @SWG\Response(
+     *         response=404,
+     *         description="User not found."
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="path",
+     *         type="integer",
+     *         description="The id of the end user to be deleted."
+     *     )
      * )
      * @SWG\Tag(name="End users")
      * @Security(name="Bearer")

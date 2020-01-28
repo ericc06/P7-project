@@ -14,7 +14,7 @@ class Tools extends AbstractFOSRestController
     {
         $response = new Response();
 
-        // Cache for 3600 seconds
+        // Cache for maxAge seconds
         $response->setSharedMaxAge($maxAge);
 
         // Set a custom Cache-Control directive

@@ -15,9 +15,12 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ProductRepository extends AbstractRepository
 {
-    //public function search($term, $order = 'asc', $limit = 20, $offset = 0)
-    public function search($term, $order = 'asc', $limit = 20, $page = 1)
+    public function search($term, $order = null, $limit = null, $page = null)
     {
+        $order = $order?? "asc";
+        $limit = $limit?? 20;
+        $page = $page?? 1;
+
         $qb = $this
             ->createQueryBuilder('p')
             ->select('p')

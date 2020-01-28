@@ -24,9 +24,21 @@ fos_rest:
     exception:
         enabled: true
         codes:
-            { App\Exception\ResourceValidationException: 400, App\Exception\ResourceNotFoundException: 404, App\Exception\ResourceAccessNotAuthorized: 403 }
+            {
+              App\Exception\ResourceValidationException: 400,
+              App\Exception\ResourceNotFoundException: 404,
+              App\Exception\ResourceAccessNotAuthorized: 403,
+              App\Exception\LimitOrPageLogicException: 400,
+              App\Exception\PageOutOfRangeException: 404
+            }
         messages:
-            { App\Exception\ResourceValidationException: true }
+            {
+              App\Exception\ResourceValidationException: true,
+              App\Exception\ResourceNotFoundException: true,
+              App\Exception\ResourceAccessNotAuthorized: true,
+              App\Exception\LimitOrPageLogicException: true,
+              App\Exception\PageOutOfRangeException: true
+            }
 
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true
