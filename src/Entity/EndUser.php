@@ -64,7 +64,6 @@ class EndUser
      * @ORM\Column(type="string", length=50)
      * @Serializer\Expose
      * @Assert\NotBlank()
-     * @Assert\NotNull()
      */
     private $firstName;
 
@@ -72,7 +71,6 @@ class EndUser
      * @ORM\Column(type="string", length=50)
      * @Serializer\Expose
      * @Assert\NotBlank()
-     * @Assert\NotNull()
      */
     private $lastName;
 
@@ -80,13 +78,13 @@ class EndUser
      * @ORM\Column(type="string", length=50, unique=true)
      * @Serializer\Expose
      * @Assert\NotBlank()
-     * @Assert\NotNull()
      * @Assert\Email(message = "'{{ value }}' is not a valid email address.")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true, unique=true)
+     * @Assert\NotBlank(allowNull = true)
      * @Serializer\Expose
      */
     private $phoneNumber;

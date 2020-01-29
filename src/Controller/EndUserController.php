@@ -367,7 +367,7 @@ class EndUserController extends AbstractFOSRestController
         $id = $endUser->getId();
 
         if (! empty($repository->stringValExistsForOtherId($fieldName, $value, $id))) {
-            $error = new ConstraintViolation($message, '', [], $endUser, 'email', '');
+            $error = new ConstraintViolation($message, '', [], $endUser, $fieldName, '');
             return $error;
         }
 
