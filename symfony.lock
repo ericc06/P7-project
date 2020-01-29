@@ -210,6 +210,9 @@
     "pagerfanta/pagerfanta": {
         "version": "v2.1.2"
     },
+    "php": {
+        "version": "7.2"
+    },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
     },
@@ -227,9 +230,6 @@
     },
     "psr/log": {
         "version": "1.1.0"
-    },
-    "psr/simple-cache": {
-        "version": "1.0.1"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -264,6 +264,9 @@
     "symfony/cache": {
         "version": "v4.2.8"
     },
+    "symfony/cache-contracts": {
+        "version": "v2.0.1"
+    },
     "symfony/config": {
         "version": "v4.2.8"
     },
@@ -280,9 +283,6 @@
             "./config/bootstrap.php"
         ]
     },
-    "symfony/contracts": {
-        "version": "v1.1.0"
-    },
     "symfony/debug": {
         "version": "v4.2.8"
     },
@@ -295,8 +295,14 @@
     "symfony/dotenv": {
         "version": "v4.2.8"
     },
+    "symfony/error-handler": {
+        "version": "v4.4.3"
+    },
     "symfony/event-dispatcher": {
         "version": "v4.2.8"
+    },
+    "symfony/event-dispatcher-contracts": {
+        "version": "v1.1.7"
     },
     "symfony/expression-language": {
         "version": "v4.2.9"
@@ -362,6 +368,9 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/mime": {
+        "version": "v4.4.3"
+    },
     "symfony/monolog-bridge": {
         "version": "v4.2.9"
     },
@@ -396,6 +405,9 @@
     },
     "symfony/polyfill-php72": {
         "version": "v1.11.0"
+    },
+    "symfony/polyfill-php73": {
+        "version": "v1.13.1"
     },
     "symfony/profiler-pack": {
         "version": "v1.0.4"
@@ -445,6 +457,9 @@
     "symfony/security-http": {
         "version": "v4.2.9"
     },
+    "symfony/service-contracts": {
+        "version": "v2.0.1"
+    },
     "symfony/stopwatch": {
         "version": "v4.2.8"
     },
@@ -477,6 +492,9 @@
             "./config/packages/translation.yaml",
             "./translations/.gitignore"
         ]
+    },
+    "symfony/translation-contracts": {
+        "version": "v2.0.1"
     },
     "symfony/twig-bridge": {
         "version": "v4.2.9"
