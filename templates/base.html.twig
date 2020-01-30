@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome {{ name }}!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        {{ dump(products) }}
+        {{ dump(products.data) }}
+        {% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

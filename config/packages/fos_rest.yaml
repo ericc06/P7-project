@@ -1,15 +1,41 @@
 # Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
-fos_rest: ~
-#    param_fetcher_listener:  true
-#    allowed_methods_listener:  true
-#    routing_loader: true
-#    view:
-#        view_response_listener:  true
-#    exception:
-#        codes:
-#            App\Exception\MyException: 403
-#        messages:
-#            App\Exception\MyException: Forbidden area.
-#    format_listener:
-#        rules:
-#            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, html ] }
+
+fos_rest:
+    body_converter:
+        enabled: true
+        validate: true
+        validation_errors_argument: violations
+    routing_loader:
+        default_format: json
+        include_format: false
+    body_listener: true
+    format_listener:
+        rules:
+            - { path: '^/', priorities: ['json'], fallback_format: 'json' }
+            #- { path: '^/', priorities: ['html'], fallback_format: 'json' }
+    param_fetcher_listener: true
+    access_denied_listener:
+        json: true
+    view:
+        view_response_listener: true
+        formats: { json: true, xml: false, rss: false }
+    serializer:
+        serialize_null: true
+    exception:
+        enabled: true
+        codes:
+            {
+              App\Exception\ResourceValidationException: 400,
+              App\Exception\ResourceNotFoundException: 404,
+              App\Exception\ResourceAccessNotAuthorized: 403,
+              App\Exception\LimitOrPageLogicException: 400,
+              App\Exception\PageOutOfRangeException: 404
+            }
+        messages:
+            {
+              App\Exception\ResourceValidationException: true,
+              App\Exception\ResourceNotFoundException: true,
+              App\Exception\ResourceAccessNotAuthorized: true,
+              App\Exception\LimitOrPageLogicException: true,
+              App\Exception\PageOutOfRangeException: true
+            }
