@@ -15,9 +15,9 @@ class ClientData extends Fixture implements ContainerAwareInterface
 {
     private $tools;
 
-    public const CLIENT_1 = 'client-1';
-    public const CLIENT_2 = 'client-2';
-    public const CLIENT_3 = 'client-3';
+    public const RESELLER_1 = 'reseller-1';
+    public const RESELLER_2 = 'reseller-2';
+    public const RESELLER_3 = 'reseller-3';
 
     const USER_MANAGER = 'fos_user.user_manager';
 
@@ -46,20 +46,22 @@ class ClientData extends Fixture implements ContainerAwareInterface
             $oauth2Client->setSecret($this->tools->getRandAlphaNumStrLow(40));
             $oauth2Client->setAllowedGrantTypes(['password', 'refresh_token']);
 
-            $oauth2Client->setReseller(self::createReseller($i, $oauth2Client, $manager));
+            $reseller = self::createReseller($i, $oauth2Client);
+            $oauth2Client->setReseller($reseller);
 
+            // Reseller entity automatically persisted thanks to cascade={"persist"}
             $manager->persist($oauth2Client);
 
             // We create a reference to the current reseller in order to share it
-            // in the EndUserData fixture.
+            // with the EndUserData fixture.
             $constantName = "RESELLER_" . $i;
-            $this->addReference(constant("self::{$constantName}"), $oauth2Client->getReseller());
+            $this->addReference(constant("self::{$constantName}"), $reseller);
         }
 
         $manager->flush();
     }
 
-    public function createReseller($i, $client, $manager)
+    public function createReseller($i, $client)
     {
         $userManager = $this->container->get(static::USER_MANAGER);
         /** @var Reseller $reseller */
@@ -74,6 +76,7 @@ class ClientData extends Fixture implements ContainerAwareInterface
             ->setEmail("myshop".$i."@mail.tld")
             ->setClient($client)
         ;
-        $manager->persist($reseller);
+
+        return $reseller;
     }
 }
