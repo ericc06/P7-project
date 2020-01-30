@@ -50,15 +50,10 @@ class ClientData extends Fixture implements ContainerAwareInterface
 
             $manager->persist($oauth2Client);
 
-            /** @var ClassMetadata $metadata */
-            /*
-            $metadata = $manager->getClassMetadata(get_class($oauth2Client));
-
-            $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
-            $metadata->setIdGenerator(new AssignedGenerator());
-            */
-            $constantName = "CLIENT_" . $i;
-            $this->addReference(constant("self::{$constantName}"), $oauth2Client);
+            // We create a reference to the current reseller in order to share it
+            // in the EndUserData fixture.
+            $constantName = "RESELLER_" . $i;
+            $this->addReference(constant("self::{$constantName}"), $oauth2Client->getReseller());
         }
 
         $manager->flush();
@@ -73,7 +68,7 @@ class ClientData extends Fixture implements ContainerAwareInterface
         $reseller
             ->setShopName("my-shop-".$i)
             ->setEnabled(true)
-            ->setRoles([Reseller::ROLE_SUPER_ADMIN])
+            ->setRoles([Reseller::ROLE_USER])
             ->setUsername("myshop".$i)
             ->setPlainPassword("myshop".$i)
             ->setEmail("myshop".$i."@mail.tld")

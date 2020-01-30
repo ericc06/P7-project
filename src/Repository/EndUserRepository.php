@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class EndUserRepository extends AbstractRepository
 {
-    public function search($client, $term, $order = null, $limit = null, $page = null)
+    public function search($reseller, $term, $order = null, $limit = null, $page = null)
     {
         $order = $order?? "asc";
         $limit = $limit?? 20;
@@ -23,8 +23,8 @@ class EndUserRepository extends AbstractRepository
         $qb = $this
             ->createQueryBuilder('e')
             ->select('e')
-            ->where('e.client = :id')
-            ->setParameter('id', $client->getId())
+            ->where('e.reseller = :id')
+            ->setParameter('id', $reseller->getId())
             ->orderBy('e.lastName', $order)
         ;
 

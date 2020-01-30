@@ -39,7 +39,7 @@ abstract class AbstractRepository extends EntityRepository
         $pager->setMaxPerPage((int) $limit);
 
         if ($page > $pager->getNbPages()) {
-            $message = 'The requested page number is out of range. '.$limit;
+            $message = 'The requested page number is out of range.';
 
             throw new PageOutOfRangeException($message);
         }

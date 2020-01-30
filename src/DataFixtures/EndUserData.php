@@ -30,7 +30,7 @@ class EndUserData extends Fixture implements DependentFixtureInterface
             $endUser->setEmail($email);
             $endUser->setPhoneNumber($this->tools->getRandNumStr(10));
             $endUser->setCreationDate(new \DateTime());
-            $endUser->setClient(self::getAClient());
+            $endUser->setReseller(self::getAReseller());
             $manager->persist($endUser);
         }
 
@@ -69,13 +69,13 @@ class EndUserData extends Fixture implements DependentFixtureInterface
         ]);
     }
 
-    public function getAClient()
+    public function getAReseller()
     {
         return $this->tools->getRandValFromArray(
             [
-                $this->getReference(ClientData::CLIENT_1),
-                $this->getReference(ClientData::CLIENT_2),
-                $this->getReference(ClientData::CLIENT_3)
+                $this->getReference(ClientData::RESELLER_1),
+                $this->getReference(ClientData::RESELLER_2),
+                $this->getReference(ClientData::RESELLER_3)
             ]
         );
     }

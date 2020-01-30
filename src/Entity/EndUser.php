@@ -103,21 +103,21 @@ class EndUser
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="App\Entity\Client",
+     *     targetEntity="App\Entity\Reseller",
      *     inversedBy="endUsers"
      * )
      * @ORM\JoinColumn(nullable=false)
      */
-    private $client;
+    private $reseller;
 
     /**
      * Constructor
      *
-     * @param Client $client
+     * @param Reseller $reseller
      */
-    public function __construct(Client $client = null)
+    public function __construct(Reseller $reseller = null)
     {
-        $this->client = $client;
+        $this->reseller = $reseller;
     }
 
     public function getId(): ?int
@@ -197,14 +197,14 @@ class EndUser
         return $this;
     }
 
-    public function getClient(): ?Client
+    public function getReseller(): ?Reseller
     {
-        return $this->client;
+        return $this->reseller;
     }
 
-    public function setClient(?Client $client): self
+    public function setReseller(?Reseller $reseller): self
     {
-        $this->client = $client;
+        $this->reseller = $reseller;
 
         return $this;
     }
