@@ -45,11 +45,11 @@ class EndUserController extends AbstractFOSRestController
         return $apiClient;
     }
 
-    // Checks if an EndUser belongs to the current authenticated client.
+    // Checks if an EndUser belongs to the current authenticated client (reseller).
     // If not, throws an appropriate custom exception.
     private function checkEndUserOwner($endUser)
     {
-        if ($endUser->getClient() !== self::getAuthClient()) {
+        if ($endUser->getReseller()->getClient() !== self::getAuthClient()) {
             $message = 'You are not authorized to access this resource.';
 
             throw new ResourceAccessNotAuthorized($message);
@@ -137,7 +137,7 @@ class EndUserController extends AbstractFOSRestController
     public function list(ParamFetcherInterface $paramFetcher)
     {
         $pager = $this->getDoctrine()->getRepository(EndUser::class)->search(
-            self::getAuthClient(),
+            self::getAuthClient()->getReseller(),
             $paramFetcher->get('lastname'),
             $paramFetcher->get('order'),
             $paramFetcher->get('limit'),
@@ -240,7 +240,7 @@ class EndUserController extends AbstractFOSRestController
         }
 
         $endUser->setCreationDate(new \DateTime());
-        $endUser->setClient(self::getAuthClient());
+        $endUser->setReseller(self::getAuthClient()->getReseller());
 
         $em = $this->getDoctrine()->getManager();
 

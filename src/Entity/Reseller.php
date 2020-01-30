@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
@@ -95,12 +97,22 @@ class Reseller extends BaseUser
     protected $client;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\EndUser",
+     *     mappedBy="reseller",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $endUsers;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->deleted = false;
+        $this->endUsers = new ArrayCollection();
     }
 
     /**
@@ -183,5 +195,52 @@ class Reseller extends BaseUser
     public function getClient()
     {
         return $this->client;
+    }
+
+    /**
+     * Add endUser
+     *
+     * @param EndUser $endUser
+     *
+     * @return Reseller
+     */
+    public function addEndUser(EndUser $endUser): self
+    {
+        $this->endUsers[] = $endUser;
+        $endUser->setReseller($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove endUser
+     *
+     * @param EndUser $endUser
+     */
+    public function removeEndUser(EndUser $endUser)
+    {
+        $this->endUsers->removeElement($endUser);
+    }
+
+    /**
+     * Get endUser
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEndUser(): ?Collection
+    {
+        return $this->endUsers;
+    }
+
+    /**
+     * Set endUser
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function setEndUser(?Collection $endUsers): self
+    {
+        $this->endUsers = $endUsers;
+
+        return $this;
     }
 }
