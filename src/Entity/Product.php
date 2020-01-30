@@ -47,7 +47,7 @@ class Product
     private $memCapacity;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="decimal", precision=2, scale=1)
      */
     private $screenSize;
 
