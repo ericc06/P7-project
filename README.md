@@ -12,8 +12,8 @@ Demo API OAuth user connection details:
         
         {
           "grant_type": "password",
-          "client_id": "1_oez3pz32jkqgym9gu103",
-          "client_secret": "be9qq7aqr3jl1hbhha9c4m977w0dcwr2mhaeigw6",
+          "client_id": "1_zlnvh5uocons8epn5yuc",
+          "client_secret": "vpkemq2bfdwkmxmdq1cypnqko04ueb10fyfhgppn",
           "username": "myshop1",
           "password": "myshop1"
         }
