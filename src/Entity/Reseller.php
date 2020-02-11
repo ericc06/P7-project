@@ -164,11 +164,11 @@ class Reseller extends BaseUser
     }
 
     /**
-     * Get deleted
+     * Is deleted
      *
      * @return boolean
      */
-    public function getDeleted()
+    public function isDeleted()
     {
         return $this->deleted;
     }
