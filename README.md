@@ -3,9 +3,9 @@
 
 Demo API base URL: https://cunvergenza.org/api/  
 API auto-generated documentation: https://cunvergenza.org/api/doc  
-API comprehensive user manual: https://cunvergenza.org/files/user-manual.pdf
+API comprehensive user manual: https://cunvergenza.org/files/User_manual.pdf
     
-Demo API OAuth user connection details:  
+Demo API OAuth client connection details:  
 &nbsp; &nbsp; *Method:* POST  
 &nbsp; &nbsp; *URL:* https://cunvergenza.org/oauth/v2/token  
 &nbsp; &nbsp; *Body:*  
@@ -73,4 +73,4 @@ Codacy and Codeclimate code quality analysis are accessible here:
 
 12. A comprehensive user manual in English can be found here:
 
-        https://<domain>/files/user-manual.pdf
+        https://<domain>/files/User_manual.pdf
