@@ -28,6 +28,12 @@ abstract class AbstractRepository extends EntityRepository
             throw new LimitOrPageLogicException($message);
         }
 
+        if (!(filter_var($limit, FILTER_VALIDATE_INT) && 20 >= $limit)) {
+            $message = '$limit maximum accepted value is 20.';
+
+            throw new LimitOrPageLogicException($message);
+        }
+
         if (!(filter_var($page, FILTER_VALIDATE_INT) && 0 < $page)) {
             $message = '$page must be an integer greater than 0.';
 
